@@ -6,6 +6,7 @@
 current_path=$(pwd)
 clients_directory="$current_path/clients"
 now=$(date +%s)
+wgconf=/etc/wireguard/wg0.conf
 
 # after X minutes the clients will be considered disconnected
 timeout=15
@@ -37,7 +38,12 @@ while IFS= read -r LINE; do
 	public_key=$(awk '{ print $1 }' <<< "$LINE")
 	remote_ip=$(awk '{ print $3 }' <<< "$LINE" | awk -F':' '{print $1}')
 	last_seen=$(awk '{ print $5 }' <<< "$LINE")
-	client_name=$(grep -R "$public_key" /etc/wireguard/keys/ | awk -F"/etc/wireguard/keys/|_pub:" '{print $2}' | sed -e 's./..g')
+	#client_name=$(grep -R "$public_key" /etc/wireguard/keys/ | awk -F"/etc/wireguard/keys/|_pub:" '{print $2}' | sed -e 's./..g')
+	
+	line_public_key="$(grep -wn $public_key $wgconf | cut -d: -f1)"
+	let line_client_name=$line_public_key-2
+	client_name="$(sed -n "${line_client_name}"p ${wgconf})"
+	client_name="${client_name:13}"
 	client_file="$clients_directory/$client_name.txt"
 
 	# create the client file if not exists.
