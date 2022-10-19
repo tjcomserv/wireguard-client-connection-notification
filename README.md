@@ -1,6 +1,9 @@
 # wireguard-client-connection-notification
 Send a message to telegram when a client is connected or disconnected from wireguard tunnel
 
+## How to setup Telegram bot:
+tbc
+
 ## How to use:
 - Clone this repo into your server with wireguard installed
 - Rename .config.example to .config and edit the file with your telegram chat id and bot token
